@@ -1,0 +1,21 @@
+[project]
+name = "snippet"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "click>=8.3.1",
+    "dspy-ai>=3.0.4",
+    "ipykernel>=7.1.0",
+    "ipywidgets>=8.1.8",
+    "langchain-core>=1.1.0",
+    "langgraph>=1.0.4",
+    "numpy>=2.3.5",
+    "pandas>=2.3.3",
+    "pydantic>=2.12.4",
+    "rank-bm25>=0.2.2",
+    "re-wx>=0.1.0",
+    "rich>=14.2.0",
+    "scikit-learn>=1.7.2",
+]

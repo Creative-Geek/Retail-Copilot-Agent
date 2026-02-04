@@ -1,0 +1,73 @@
+{
+  "predict": {
+    "traces": [],
+    "train": [],
+    "demos": [
+      {
+        "augmented": true,
+        "question": "What is the total revenue from 'Beverages'?",
+        "db_schema": "Table: Categories\nColumns: CategoryID, CategoryName, Description, Picture\n\nTable: sqlite_sequence\nColumns: name, seq\n\nTable: CustomerCustomerDemo\nColumns: CustomerID, CustomerTypeID\n\nTable: CustomerDemographics\nColumns: CustomerTypeID, CustomerDesc\n\nTable: Customers\nColumns: CustomerID, CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax\n\nTable: Employees\nColumns: EmployeeID, LastName, FirstName, Title, TitleOfCourtesy, BirthDate, HireDate, Address, City, Region, PostalCode, Country, HomePhone, Extension, Photo, Notes, ReportsTo, PhotoPath\n\nTable: EmployeeTerritories\nColumns: EmployeeID, TerritoryID\n\nTable: Order Details\nColumns: OrderID, ProductID, UnitPrice, Quantity, Discount\n\nTable: Orders\nColumns: OrderID, CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry\n\nTable: Products\nColumns: ProductID, ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued\n\nTable: Regions\nColumns: RegionID, RegionDescription\n\nTable: Shippers\nColumns: ShipperID, CompanyName, Phone\n\nTable: Suppliers\nColumns: SupplierID, CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax, HomePage\n\nTable: Territories\nColumns: TerritoryID, TerritoryDescription, RegionID\n\n",
+        "constraints": "",
+        "reasoning": "To calculate the total revenue from 'Beverages', we need to sum up all sales made by products that belong to this category. We will join the Orders table with \"Order Details\" and Products tables, filter for orders where the CategoryName is 'Beverages', then extract the year from OrderDate using strftime('%Y', OrderDate) and group the results by this extracted year to ensure we get a total per each order date.",
+        "sql_query": "SELECT strftime('%Y', o.OrderDate) as Year, SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) as Revenue FROM Orders o JOIN \"Order Details\" od ON o.OrderID = od.OrderID JOIN Products p ON od.ProductID = p.ProductID JOIN Categories c ON p.CategoryID = c.CategoryID WHERE c.CategoryName = 'Beverages' GROUP BY Year"
+      },
+      {
+        "augmented": true,
+        "question": "List top 3 products by unit price.",
+        "db_schema": "Table: Categories\nColumns: CategoryID, CategoryName, Description, Picture\n\nTable: sqlite_sequence\nColumns: name, seq\n\nTable: CustomerCustomerDemo\nColumns: CustomerID, CustomerTypeID\n\nTable: CustomerDemographics\nColumns: CustomerTypeID, CustomerDesc\n\nTable: Customers\nColumns: CustomerID, CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax\n\nTable: Employees\nColumns: EmployeeID, LastName, FirstName, Title, TitleOfCourtesy, BirthDate, HireDate, Address, City, Region, PostalCode, Country, HomePhone, Extension, Photo, Notes, ReportsTo, PhotoPath\n\nTable: EmployeeTerritories\nColumns: EmployeeID, TerritoryID\n\nTable: Order Details\nColumns: OrderID, ProductID, UnitPrice, Quantity, Discount\n\nTable: Orders\nColumns: OrderID, CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry\n\nTable: Products\nColumns: ProductID, ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued\n\nTable: Regions\nColumns: RegionID, RegionDescription\n\nTable: Shippers\nColumns: ShipperID, CompanyName, Phone\n\nTable: Suppliers\nColumns: SupplierID, CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax, HomePage\n\nTable: Territories\nColumns: TerritoryID, TerritoryDescription, RegionID\n\n",
+        "constraints": "",
+        "reasoning": "The task requires listing of top 3 products based on their unit price. This can be achieved by grouping the order details by product, summing up total sales per product (which is calculated as UnitPrice multiplied by Quantity and then subtracting Discount), and ordering this result in descending order to get the highest values first. Then we limit the results to 3 using `LIMIT` clause.\n\n```sql\nSELECT p.ProductName, SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) as TotalSales\nFROM \"Order Details\" od JOIN Products p ON od.ProductID = p.ProductID\nGROUP BY od.ProductID, p.ProductName\nORDER BY TotalSales DESC\nLIMIT 3\n```",
+        "sql_query": "SELECT p.ProductName, SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) as TotalSales\nFROM \"Order Details\" od JOIN Products p ON od.ProductID = p.ProductID\nGROUP BY od.ProductID, p.ProductName\nORDER BY TotalSales DESC\nLIMIT 3"
+      },
+      {
+        "augmented": true,
+        "question": "How many orders were placed in 2017?",
+        "db_schema": "Table: Categories\nColumns: CategoryID, CategoryName, Description, Picture\n\nTable: sqlite_sequence\nColumns: name, seq\n\nTable: CustomerCustomerDemo\nColumns: CustomerID, CustomerTypeID\n\nTable: CustomerDemographics\nColumns: CustomerTypeID, CustomerDesc\n\nTable: Customers\nColumns: CustomerID, CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax\n\nTable: Employees\nColumns: EmployeeID, LastName, FirstName, Title, TitleOfCourtesy, BirthDate, HireDate, Address, City, Region, PostalCode, Country, HomePhone, Extension, Photo, Notes, ReportsTo, PhotoPath\n\nTable: EmployeeTerritories\nColumns: EmployeeID, TerritoryID\n\nTable: Order Details\nColumns: OrderID, ProductID, UnitPrice, Quantity, Discount\n\nTable: Orders\nColumns: OrderID, CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry\n\nTable: Products\nColumns: ProductID, ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued\n\nTable: Regions\nColumns: RegionID, RegionDescription\n\nTable: Shippers\nColumns: ShipperID, CompanyName, Phone\n\nTable: Suppliers\nColumns: SupplierID, CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax, HomePage\n\nTable: Territories\nColumns: TerritoryID, TerritoryDescription, RegionID\n\n",
+        "constraints": "",
+        "reasoning": "To find out how many orders were placed in 2017, we need to count all unique order IDs from the Orders table where the OrderDate falls within the year 2017. The query should filter by date range and use a COUNT DISTINCT function on the OrderID column to ensure that each order is only counted once, even if multiple items were ordered in the same transaction.",
+        "sql_query": "SELECT COUNT(DISTINCT o.OrderID) as TotalOrders FROM Orders o WHERE strftime('%Y', o.OrderDate) = '2017';"
+      },
+      {
+        "augmented": true,
+        "question": "What is the average order value?",
+        "db_schema": "Table: Categories\nColumns: CategoryID, CategoryName, Description, Picture\n\nTable: sqlite_sequence\nColumns: name, seq\n\nTable: CustomerCustomerDemo\nColumns: CustomerID, CustomerTypeID\n\nTable: CustomerDemographics\nColumns: CustomerTypeID, CustomerDesc\n\nTable: Customers\nColumns: CustomerID, CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax\n\nTable: Employees\nColumns: EmployeeID, LastName, FirstName, Title, TitleOfCourtesy, BirthDate, HireDate, Address, City, Region, PostalCode, Country, HomePhone, Extension, Photo, Notes, ReportsTo, PhotoPath\n\nTable: EmployeeTerritories\nColumns: EmployeeID, TerritoryID\n\nTable: Order Details\nColumns: OrderID, ProductID, UnitPrice, Quantity, Discount\n\nTable: Orders\nColumns: OrderID, CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry\n\nTable: Products\nColumns: ProductID, ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued\n\nTable: Regions\nColumns: RegionID, RegionDescription\n\nTable: Shippers\nColumns: ShipperID, CompanyName, Phone\n\nTable: Suppliers\nColumns: SupplierID, CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax, HomePage\n\nTable: Territories\nColumns: TerritoryID, TerritoryDescription, RegionID\n\n",
+        "constraints": "AOV = SUM(UnitPrice * Quantity * (1 - Discount)) / COUNT(DISTINCT OrderID)",
+        "reasoning": "To calculate the average order value (AOV), we need to sum up the total revenue of each order, which is obtained by multiplying the unit price by the quantity and discounting it accordingly. This sum should then be divided by the count of distinct orders within a specified timeframe or across all data if no specific range is given. The SQL query will join the Orders table with Order Details to calculate this metric based on the formula provided in the constraints, which takes into account both the quantity and discount for each order item.",
+        "sql_query": "SELECT ROUND(SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) / COUNT(DISTINCT o.OrderID), 2) as AverageOrderValue FROM Orders o JOIN \"Order Details\" od ON o.OrderID = od.OrderID"
+      }
+    ],
+    "signature": {
+      "instructions": "Generate a valid SQLite query for the Northwind retail database.\n\nCRITICAL SQLite rules:\n- Use double quotes for table names with spaces: \"Order Details\"\n- Use strftime('%Y', OrderDate) for year extraction, NOT YEAR()\n- Use BETWEEN for date ranges: OrderDate BETWEEN '2017-06-01' AND '2017-06-30'\n- Join tables: Orders -> \"Order Details\" -> Products -> Categories\n- Revenue formula: SUM(od.UnitPrice * od.Quantity * (1 - od.Discount))\n- Gross Margin: SUM((od.UnitPrice * 0.3) * od.Quantity * (1 - od.Discount)) (30% margin = UnitPrice - 0.7*UnitPrice)\n- When asked for product names, SELECT p.ProductName NOT p.ProductID\n- When asked for customer names, SELECT c.CompanyName NOT c.CustomerID\n- When asked for category names, SELECT c.CategoryName NOT c.CategoryID",
+      "fields": [
+        {
+          "prefix": "Question:",
+          "description": "The user's question about retail analytics."
+        },
+        {
+          "prefix": "Db Schema:",
+          "description": "The database schema (tables and columns)."
+        },
+        {
+          "prefix": "Constraints:",
+          "description": "Extracted constraints like date ranges, KPI formulas from docs."
+        },
+        {
+          "prefix": "Reasoning: Let's think step by step in order to",
+          "description": "${reasoning}"
+        },
+        {
+          "prefix": "Sql Query:",
+          "description": "A valid SQLite query. Return names not IDs. No markdown code blocks."
+        }
+      ]
+    },
+    "lm": null
+  },
+  "metadata": {
+    "dependency_versions": {
+      "python": "3.13",
+      "dspy": "3.0.4",
+      "cloudpickle": "3.1"
+    }
+  }
+}
